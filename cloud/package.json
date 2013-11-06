@@ -2,6 +2,7 @@
   "name": "fh-app",
   "version": "0.1.0",
   "dependencies" : {
-    "fh-nodeapp" : "*"
+    "fh-nodeapp" : "*",
+    "fh-cms-cloud":"https://github.com/Keyang/cmsFHCloud/tarball/master"
   }
 }

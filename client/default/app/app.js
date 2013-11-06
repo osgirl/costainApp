@@ -9,9 +9,7 @@ var app=(function(module) {
     });  
     //TODO add loading spiner
     cms.ui.initUi(function(){
-        console.log("UI inited");
-        var homeList=cms.ui.getHtml(cms.app.alias);
-        // $("#homePage")
+        $("#homePage [data-role='content']").html(cms.ui.getHtml(cms.app.alias)).trigger("create");
     });
   }
 

@@ -486,9 +486,11 @@ cms.ui.jqueryMobile = (function(module) {
     module.init = init;
 
     function init() {
-        $("li[data-nav]").live("tap",function(){
+        $("[data-nav]").live("tap",function(){
             var pageId=$(this).data().nav;
-            alert(pageId);
+            if (cms.app.onNav){
+                cms.app.onNav(pageId);    
+            }
         });
     }
 

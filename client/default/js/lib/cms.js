@@ -1,11 +1,17 @@
 var cms=(function(module){
-    module.setApplication=setApplication;
     module.init=init;
-    function setApplication(app){
+    /**
+     * init cms sdk
+     * app={
+     *     "alias":""
+     * 
+     * }
+     * @param  {[type]} app [description]
+     * @return {[type]}     [description]
+     */
+    function init(app){
+        cms.ui.setRenderer(cms.ui.jqueryMobile);
         module.app=app;
-    }
-    function init(){
-
     }
     return module;
 })(cms ||{});
@@ -311,12 +317,14 @@ cms.data = (function(module) {
 cms.ui = (function(module) {
     module.setRenderer = setRenderer;
     module.render = render;
-    module.registerType = registeredType;
-
+    module.registerType = registerType;
+    module.getHtml=getHtml;
     var renderer = null;
     var registeredType = {};
     var uis = {};
-
+    function getHtml(alias){
+        return uis[alias];
+    }
     function setRenderer(_renderer) {
         renderer = _renderer;
     }
@@ -377,7 +385,7 @@ cms.ui = (function(module) {
 
     }
     return module;
-})(com.ui || {});
+})(cms.ui || {});
 cms.ui.jqueryMobile = (function(module) {
     module.renderList = renderList;
 
@@ -391,11 +399,11 @@ cms.ui.jqueryMobile = (function(module) {
             var eleName = ele.name;
             innerHtml += "<li><a href='#" + key + "'>" + eleName + "</a></li>";
         }
-        var html = '<div data-role="page" id="' + alias + '">' +
+        var html = '<div class="renderList" data-role="page" id="' + alias + '" data-position="fixed">' +
             '<div data-role="header"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             '<ul data-role="listview" data-inset="true">' +
-            innerHtml '</ul>' +
+            innerHtml+'</ul>' +
             '</div>' +
             '</div>';
         cb(null,html);
@@ -408,7 +416,18 @@ cms.ui.jqueryMobile=(function(module){
     module.renderHtml=renderHtml;
 
     function renderHtml(element,cb){
-        
+        var contentId=element._id;
+        var title=element.name;
+        var alias=element.alias;
+        cms.data.getContent(contentId,function(err,content){
+            var html = '<div class="renderHtml" data-role="page" id="' + alias + '" data-position="fixed">' +
+            '<div data-role="header"><h2>' + title + '</h2></div>' +
+            '<div data-role="content">' +
+            content+
+            '</div>' +
+            '</div>';
+            cb(null,content);
+        });
     }
 
 
@@ -418,17 +437,28 @@ cms.ui.jqueryMobile=(function(module){
     module.renderRSS=renderRSS;
 
     function renderRSS(element,cb){
-        
-    }
-
-
-    return module;
-})(cms.ui.jqueryMobile ||{});
-cms.ui.jqueryMobile=(function(module){
-    module.renderRSSFeed=renderRSSFeed;
-
-    function renderRSSFeed(element,cb){
-        
+        var _id=element._id;
+        var title=element.name;
+        var alias=element.alias;
+        cms.data.getContent(_id,function(err,content){
+            var innerHtml="";
+            var html="";
+            if (!err && content ){
+                for (var i=0;i<content.length;i++){
+                    var title=content[i].title;
+                    var extraId=content[i]._id;
+                    innderHtml+="<li><a href='#" + key + "' data-extraId='"+extraId+"'>" + title + "</a></li>";
+                }
+            }
+            html = '<div class="renderRSS" data-role="page" id="' + alias + '" data-position="fixed">' +
+            '<div data-role="header"><h2>' + title + '</h2></div>' +
+            '<div data-role="content">' +
+            '<ul data-role="listview" data-inset="true">' +
+            innerHtml+'</ul>' +
+            '</div>' +
+            '</div>';
+            cb(null,html);
+        });
     }
 
 
@@ -438,7 +468,17 @@ cms.ui.jqueryMobile=(function(module){
     module.defaultRender=defaultRender;
 
     function defaultRender(element,cb){
-        cb(null,"");
+        var name=element.name;
+        var alias=element.alias;
+        var _id=element._id;
+        var html='<div class="defaultRender" data-role="page" id="' + alias + '" data-position="fixed">' +
+            '<div data-role="header"><h2>' + name + '</h2></div>' +
+            '<div data-role="content">' +
+            _id+
+            '</div>' +
+            '</div>';
+
+        cb(null,html);
     }
 
 

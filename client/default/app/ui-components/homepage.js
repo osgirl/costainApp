@@ -42,9 +42,10 @@
       // <a href="#about" data-role="button" data-icon="about">About</a>
 
       var btn = $('<a>');
-      btn.attr('href', section.name);
+      btn.text(section.name);
       btn.data('role', 'button');
       btn.data('icon', getIconFor(section.name));
+      btn.attr('href', section.alias);
       return $('<li>').append(btn);
     }
 

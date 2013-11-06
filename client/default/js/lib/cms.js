@@ -318,33 +318,43 @@ cms.ui = (function(module) {
     module.setRenderer = setRenderer;
     module.render = render;
     module.registerType = registerType;
-    module.getHtml=getHtml;
-    module.initUi=initUi;
+    module.getHtml = getHtml;
+    module.initUi = initUi;
     var renderer = null;
     var registeredType = {};
     var uis = {};
-    function getHtml(alias){
+
+    function getHtml(alias) {
         return uis[alias];
     }
+
     function setRenderer(_renderer) {
         renderer = _renderer;
     }
 
     function render(element, cb) {
         var alias = element.alias;
+
         if (registeredType[alias]) {
             return registeredType[alias](element, cb);
         }
         if (element.children) { //list
             return renderer.renderList(element, cb);
-        } else if (element.cat == "core") {
-            if (element.cat == "html") {
-                return renderer.renderHtml(element, cb);
+        } else {
+            var cat=element.cat;
+            var type=element.type;
+            var template=element.template;
+            if (cat == "core") {
+                if (type == "html" && template=="html") {
+                    return renderer.renderHtml(element, cb);
+                }
+            } else if (cat == "template") {
+
+            } else if (cat == "import") {
+                if (template=="rss"){
+                    return renderer.renderRSS(element,cb);
+                }
             }
-        } else if (element.cat == "template") {
-
-        } else if (element.cat == "import") {
-
         }
         return renderer.defaultRender(element, cb);
     }
@@ -354,10 +364,12 @@ cms.ui = (function(module) {
     }
 
     function initUi(cb) {
+        renderer.init();
         cms.data.getAppStructure(function(err, appStructure) {
             var root = appStructure.content;
-            _recursiveParseApp(root,cb);
+            _recursiveParseApp(root, cb);
         });
+
     }
 
     function _recursiveParseApp(element, cb) {
@@ -379,7 +391,7 @@ cms.ui = (function(module) {
 
                     });
                 }
-                if (elementCount==0){
+                if (elementCount == 0) {
                     cb();
                 }
             } else {
@@ -401,7 +413,7 @@ cms.ui.jqueryMobile = (function(module) {
         for (var key in children) {
             var ele = children[key];
             var eleName = ele.name;
-            innerHtml += "<li><a href='#" + key + "'>" + eleName + "</a></li>";
+            innerHtml += "<li><a href='#' data-nav='"+key+"'>" + eleName + "</a></li>";
         }
         var html = '<div class="renderList" data-role="page" id="' + alias + '" data-position="fixed">' +
             '<div data-role="header"><h2>' + title + '</h2></div>' +
@@ -427,10 +439,10 @@ cms.ui.jqueryMobile=(function(module){
             var html = '<div class="renderHtml" data-role="page" id="' + alias + '" data-position="fixed">' +
             '<div data-role="header"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
-            content+
+            content.content+
             '</div>' +
             '</div>';
-            cb(null,content);
+            cb(null,html);
         });
     }
 
@@ -442,18 +454,20 @@ cms.ui.jqueryMobile=(function(module){
 
     function renderRSS(element,cb){
         var _id=element._id;
-        var title=element.name;
+        
         var alias=element.alias;
         cms.data.getContent(_id,function(err,content){
             var innerHtml="";
             var html="";
+            content=content.content;
             if (!err && content ){
                 for (var i=0;i<content.length;i++){
                     var title=content[i].title;
                     var extraId=content[i]._id;
-                    innderHtml+="<li><a href='#" + key + "' data-extraId='"+extraId+"'>" + title + "</a></li>";
+                    innerHtml+="<li><a href='#' data-extraId='"+extraId+"'>" + title + "</a></li>";
                 }
             }
+            var title=element.name;
             html = '<div class="renderRSS" data-role="page" id="' + alias + '" data-position="fixed">' +
             '<div data-role="header"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
@@ -468,6 +482,19 @@ cms.ui.jqueryMobile=(function(module){
 
     return module;
 })(cms.ui.jqueryMobile ||{});
+cms.ui.jqueryMobile = (function(module) {
+    module.init = init;
+
+    function init() {
+        $("li[data-nav]").live("tap",function(){
+            var pageId=$(this).data().nav;
+            alert(pageId);
+        });
+    }
+
+
+    return module;
+})(cms.ui.jqueryMobile || {});
 cms.ui.jqueryMobile=(function(module){
     module.defaultRender=defaultRender;
 

@@ -176,7 +176,7 @@ cms.model = (function(module) {
       $fh.data({
         act: 'save',
         key: key,
-        data: json
+        val: json
       }, function(res) {
         return callback(null, res);
       }, function(msg, err) {

@@ -1,6 +1,6 @@
 (function() {
   // Element is the children of costainapp_1383735125091
-  cms.ui.registerType('costainapp_1383735125091', function(element, cb) {    
+  cms.ui.registerType('costainapp_1383735125091', function(element, cb) {
 
     /**
      * Get icon for section
@@ -16,10 +16,9 @@
      */
     function createButton(section) {
       // <a href="#about" data-role="button" data-icon="about">About</a>
-      var html = '<li><a href="#"><div data-nav="' + section.alias + '">'+
-        '<img class="home-icon" src="img/' + section.name.toLowerCase() + '.png">'+
-        '<p>'+section.name+'</p>'+
-        '</div></a></li>';
+      var html = '<li><a href="#"><div data-nav="' + section.alias + '" class="home-icon" style="-webkit-mask-box-image: url(img/'+section.name.toLowerCase()+'.png);">'+
+        '</div><p>'+section.name+'</p>'+
+        '</a></li>';
 
       var ele = $(html);
       return ele.bind('click', function(e) {

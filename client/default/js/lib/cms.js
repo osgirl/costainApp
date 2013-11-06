@@ -319,6 +319,7 @@ cms.ui = (function(module) {
     module.render = render;
     module.registerType = registerType;
     module.getHtml=getHtml;
+    module.initUi=initUi;
     var renderer = null;
     var registeredType = {};
     var uis = {};
@@ -353,7 +354,7 @@ cms.ui = (function(module) {
     }
 
     function initUi(cb) {
-        com.daa.getAppStructure(function(err, appStructure) {
+        cms.data.getAppStructure(function(err, appStructure) {
             var root = appStructure.content;
             _recursiveParseApp(root,cb);
         });
@@ -377,6 +378,9 @@ cms.ui = (function(module) {
                         }, 0);
 
                     });
+                }
+                if (elementCount==0){
+                    cb();
                 }
             } else {
                 cb();

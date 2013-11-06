@@ -199,31 +199,42 @@ cms.service = (function(module) {
    * Get content from CMS and save to localstorage.
    */
 
-  function sync() {
+  function sync(callback) {
     cms.model.getAppStructure(function(err, res) {
-      if(err) {
-        console.log('Failed to get CMS updated content');
+      if (err) {
+        return callback(err, null);
       }
-      console.log('Got updated CMS content.');
 
-      cms.model.create(cms.model.KEYS.AppStructure, res, function(err, res) {
-        if(!err) {
-          console.log('Saved CMS content to localstorage');
+      cms.model.create(cms.model.KEYS.AppStructure, res, function(err, localRes) {
+        if (!err) {
+          return callback(null, res);
         } else {
-          console.log('Failed to save CMS content to localstorage');
+          return callback(err, null);
         }
       });
     });
   }
 
   // TODO Handle device events, 'resume' etc
-  function startPoll(seconds) {
+  function startPoll(seconds, callback) {
+    // Default callback if one isn't provided
+    callback = callback || function(err, res) {
+      if (err) {
+        console.log('Failed to get updated app App Structure via sync: ' + JSON.stringify(err));
+      } else {
+        console.log('Sync success!');
+      }
+    };
+
     // Clear old timers
     stopPoll();
 
-    // New timer
-    timerId = setInterval(function() {
-      sync();
+    timerId = setTimeout(function() {
+      // Callback will fire user callback and next sync...
+      sync(function(err, res) {
+        callback(err, res);
+        startPoll(seconds, callback);
+      });
     }, seconds * 1000);
   }
 
@@ -278,7 +289,7 @@ cms.data = (function(module) {
   }
 
 
-  function getContentExtra(cat, type, template, extraId, cb) {
+  function getContentExtra(cat, type, template, extraId, callback) {
 
     function constructExtraKey(arr) {
       var key = '';
@@ -308,7 +319,7 @@ cms.data = (function(module) {
 
 
   function getRSSFeed(feedId, callback) {
-    getContentExtra("import", "json", "rss", feedId, cb);
+    getContentExtra("import", "json", "rss", feedId, callback);
   }
 
 
@@ -514,7 +525,7 @@ cms.ui.jqueryMobile = (function(module) {
                 var cat = data.cmscat;
                 var type = data.cmstype;
                 var template = data.cmstemplate;
-                var extraId = data.extraId;
+                var extraId = data.extraid;
                 var uid = (cat + type + template).toLowerCase() + "_" + extraId;
                 if ($("#" + uid).length > 0) {
                     cms.app.onNav(uid);
@@ -572,7 +583,7 @@ cms.ui.jqueryMobile.renderExtra = (function(module) {
         cms.data.getContentExtra("import","json","rss",extraId, function(err, content) {
             var title = content.title;
             var description = content.description;
-            var pubdate = content.pubdate;
+            var pubdate = new Date(content.pubdate);
             var dtStr=pubdate.getDate()+"/"+(pubdate.getMonth()+1)+"/"+pubdate.getFullYear();
             var link = content.link;
             var extraId=content._id;
@@ -591,7 +602,9 @@ cms.ui.jqueryMobile.renderExtra = (function(module) {
                 '<div data-role="button" onClick="cms.util.webview(\"'+link+'\")">Read Original Feed</div>' +
                 '</div>' +
                 '</div>' +
-                '</div>'
+                '</div>';
+
+            return cb(null, html);
         });
 
     }

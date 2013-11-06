@@ -13,6 +13,7 @@ html, body {
   border-radius: 1em;
   border: 0.125em solid black;
   background-color: #ddd;
+  box-shadow: 1px 1px 5px;
 }
 
 #homePage ul li a {
@@ -28,6 +29,7 @@ html, body {
   background: #0167b9;
   background-repeat: repeat-x;
   background-size: 100%;
+  border-bottom: 0.2em solid black;
 }
 .ui-header h1 {
   font-size: 1.25em !important;

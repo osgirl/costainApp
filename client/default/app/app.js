@@ -9,7 +9,7 @@ var app=(function(module) {
     });  
     //TODO add loading spiner
     cms.ui.initUi(function(){
-        $("#homePage [data-role='content']").html(cms.ui.getHtml(cms.app.alias)).trigger("create");
+        $("#homePage [data-role='content']").html(cms.ui.getHtml(cms.app.alias));
     });
   }
 

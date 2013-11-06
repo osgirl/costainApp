@@ -22,11 +22,10 @@
         '</div></a></li>';
 
       var ele = $(html);
-      ele.bind('click', function(e) {
+      return ele.bind('click', function(e) {
         app.view.changePage(section.alias);
         return false;
       });
-      return ele;
     }
 
 

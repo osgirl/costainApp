@@ -443,7 +443,7 @@ cms.ui.jqueryMobile = (function(module) {
             innerHtml += "<li><a href='#' data-nav='"+key+"'>" + eleName + "</a></li>";
         }
         var html = '<div class="renderList" data-role="page" id="' + alias + '" data-position="fixed">' +
-            '<div data-role="header"><h2>' + title + '</h2></div>' +
+            '<div data-role="header" data-position="fixed" data-tap-toggle="false"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             '<ul data-role="listview" data-inset="true">' +
             innerHtml+'</ul>' +
@@ -464,7 +464,7 @@ cms.ui.jqueryMobile=(function(module){
         var alias=element.alias;
         cms.data.getContent(contentId,function(err,content){
             var html = '<div class="renderHtml" data-role="page" id="' + alias + '" data-position="fixed">' +
-            '<div data-role="header"><h2>' + title + '</h2></div>' +
+            '<div data-role="header" data-position="fixed" data-tap-toggle="false"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             content.content+
             '</div>' +
@@ -496,7 +496,7 @@ cms.ui.jqueryMobile=(function(module){
             }
             var title=element.name;
             html = '<div class="renderRSS" data-role="page" id="' + alias + '" data-position="fixed">' +
-            '<div data-role="header"><h2>' + title + '</h2></div>' +
+            '<div data-role="header" data-position="fixed" data-tap-toggle="false"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             '<ul data-role="listview" data-inset="true">' +
             innerHtml+'</ul>' +
@@ -590,7 +590,7 @@ cms.ui.jqueryMobile.renderExtra = (function(module) {
             var uid="importjsonrss_"+extraId;
 
             var html = '<div data-role="page" id="'+uid+'">' +
-                '<div data-role="header" data-position="fixed">' +
+                '<div data-role="header" data-position="fixed" data-tap-toggle="false">' +
                 '<h1>Costain News</h1>' +
                 '</div>' +
                 '<div data-role="content">' +

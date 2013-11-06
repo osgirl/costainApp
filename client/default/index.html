@@ -5,12 +5,18 @@
 <link rel="stylesheet" href="css/jquery.mobile-1.2.1.min.css"/>
 <link href="css/style.css" rel="stylesheet" />
 
-<!-- Script -->
+<!-- Libraries -->
 <script src="js/lib/cms.js"></script>
 <script src="js/lib/jquery-1.8.3.min.js"></script>
 <script src="js/lib/jquery.mobile-1.2.1.min.js"></script>
-<script src="app/ui-components/homepage.js"></script>
+<!-- App structure -->
 <script src="app/app.js"></script>
+<script src="app/ui-components/homepage.js"></script>
+<script type="text/javascript">
+    $(function(){
+        app.init();
+    });
+</script>
 
 <!-- App Container -->
 <div id="container">
@@ -21,7 +27,7 @@
     </div>
 
     <div data-role="content"> 
-
+        
     </div>
   </div>
 </div>

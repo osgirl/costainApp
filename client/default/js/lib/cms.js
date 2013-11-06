@@ -278,7 +278,7 @@ cms.data = (function(module) {
   }
 
 
-  function getContentExtra(cat, type, template, extraId, callback) {
+  function getContentExtra(cat, type, template, extraId, cb) {
 
     function constructExtraKey(arr) {
       var key = '';
@@ -308,7 +308,7 @@ cms.data = (function(module) {
 
 
   function getRSSFeed(feedId, callback) {
-    getContentExtra("import", "json", "rss", feedId, callback);
+    getContentExtra("import", "json", "rss", feedId, cb);
   }
 
 
@@ -320,6 +320,8 @@ cms.ui = (function(module) {
     module.registerType = registerType;
     module.getHtml = getHtml;
     module.initUi = initUi;
+    module.loadExtra=loadExtra;
+    
     var renderer = null;
     var registeredType = {};
     var uis = {};
@@ -370,6 +372,20 @@ cms.ui = (function(module) {
             _recursiveParseApp(root, cb);
         });
 
+    }
+    function loadExtra(cat,type,template,extraId,cb){
+        var key=(cat+type+template).toLowerCase();
+        var uid=key+"_"+extraId;
+        if (uis[uid]){
+            cb(null,uis[uid]);
+        }else{
+            renderer.renderExtra[key](extraId,function(err,html){
+                uis[uid]=html;
+
+                cb(null,uid);
+            });    
+        }
+        
     }
 
     function _recursiveParseApp(element, cb) {
@@ -464,7 +480,7 @@ cms.ui.jqueryMobile=(function(module){
                 for (var i=0;i<content.length;i++){
                     var title=content[i].title;
                     var extraId=content[i]._id;
-                    innerHtml+="<li><a href='#' data-extraId='"+extraId+"'>" + title + "</a></li>";
+                    innerHtml+="<li><a href='#' data-extraType='rss' data-cmscat='import' data-cmstype='json' data-cmstemplate='rss' data-extraId='"+extraId+"'>" + title + "</a></li>";
                 }
             }
             var title=element.name;
@@ -486,12 +502,32 @@ cms.ui.jqueryMobile = (function(module) {
     module.init = init;
 
     function init() {
-        $("[data-nav]").live("tap",function(){
-            var pageId=$(this).data().nav;
-            if (cms.app.onNav){
-                cms.app.onNav(pageId);    
+        $("[data-nav]").live("tap", function() {
+            var pageId = $(this).data().nav;
+            if (cms.app.onNav) {
+                cms.app.onNav(pageId);
             }
         });
+        $("[data-extraId]").live("tap", function() {
+            if (cms.app.onNav) {
+                var data = $(this).data();
+                var cat = data.cmscat;
+                var type = data.cmstype;
+                var template = data.cmstemplate;
+                var extraId = data.extraId;
+                var uid = (cat + type + template).toLowerCase() + "_" + extraId;
+                if ($("#" + uid).length > 0) {
+                    cms.app.onNav(uid);
+                } else {
+                    cms.ui.loadExtra(cat, type, template, extraId, function(err, uid) {
+                        cms.app.onNav(uid);
+                    });
+                }
+            }
+
+        });
+
+
     }
 
 
@@ -517,3 +553,48 @@ cms.ui.jqueryMobile=(function(module){
 
     return module;
 })(cms.ui.jqueryMobile ||{});
+cms.util=(function(module){
+    module.webview=webview;
+
+    function webview(url){
+        $fh.webview({
+            "act":"open",
+            "url":url
+        })
+    }
+    return module;
+})(cms.util ||{});
+
+cms.ui.jqueryMobile.renderExtra = (function(module) {
+    module.importjsonrss = importjsonrss;
+
+    function importjsonrss(extraId, cb) {
+        cms.data.getContentExtra("import","json","rss",extraId, function(err, content) {
+            var title = content.title;
+            var description = content.description;
+            var pubdate = content.pubdate;
+            var dtStr=pubdate.getDate()+"/"+(pubdate.getMonth()+1)+"/"+pubdate.getFullYear();
+            var link = content.link;
+            var extraId=content._id;
+            var uid="importjsonrss_"+extraId;
+
+            var html = '<div data-role="page" id="'+uid+'">' +
+                '<div data-role="header" data-position="fixed">' +
+                '<h1>Costain News</h1>' +
+                '</div>' +
+                '<div data-role="content">' +
+                '<h3>'+title+'</h3>' +
+                '<p style="text-align:right; color:#999;font-size:0.8em">Published: '+dtStr+'</p>' +
+                '<div>' +
+                description+
+                '</div>' +
+                '<div data-role="button" onClick="cms.util.webview(\"'+link+'\")">Read Original Feed</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>'
+        });
+
+    }
+
+    return module;
+})(cms.ui.jqueryMobile.renderExtra || {});

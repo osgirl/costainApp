@@ -7,31 +7,7 @@
      * @param {String} section
      */
     function getIconFor(section) {
-      section = section.toLowerCase();
-
-      var icon = '';
-
-      switch (section) {
-        case 'home':
-          icon = 'img/icon/home.png';
-          break;
-        case 'news':
-          icon = 'img/icon/news.png';
-          break;
-        case 'about':
-          icon = 'img/icon/about.png';
-          break;
-        case 'contact':
-          icon = 'img/icon/contact.png';
-          break;
-        case 'video':
-          icon = 'img/icon/video.png';
-          break;
-        default:
-          icon = 'img/icon/default.png';
-      }
-
-      return icon;
+      return section.toLowerCase();
     }
 
     /**
@@ -40,13 +16,17 @@
      */
     function createButton(section) {
       // <a href="#about" data-role="button" data-icon="about">About</a>
+      var html = '<li><a href="#"><div data-nav="' + section.alias + '">'+
+        '<img class="home-icon" src="img/' + section.name.toLowerCase() + '.png">'+
+        '<p>'+section.name+'</p>'+
+        '</div></a></li>';
 
-      var btn = $('<a>');
-      btn.text(section.name);
-      btn.data('role', 'button');
-      btn.data('icon', getIconFor(section.name));
-      btn.attr('href', section.alias);
-      return $('<li>').append(btn);
+      var ele = $(html);
+      ele.bind('click', function(e) {
+        app.view.changePage(section.alias);
+        return false;
+      });
+      return ele;
     }
 
 

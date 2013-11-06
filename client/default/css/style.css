@@ -2,3 +2,45 @@ html, body {
   
 }
 
+#homePage ul li {
+  margin: 1em;
+  float: left;
+  padding: 0.4em 1em;
+  list-style: none;
+  text-align: center;
+  border: 0.125em solid black;
+  border-radius: 1em;
+  background-color: rgba(100, 100, 100, 0.5);
+}
+
+#homePage ul li a {
+  color: white;
+  text-shadow: 0 1px 0 #222;
+}
+
+/**
+ * Custom icons
+ */
+.ui-icon-about {
+  background-image: url("../img/about.png");
+  background-size: 18px;
+}
+.ui-icon-video {
+  background-image: url("../img/video.png");
+  background-size: 18px;
+}
+.ui-icon-home {
+  background-image: url("../img/home.png");
+  background-size: 18px;
+}
+.ui-icon-news {
+  background-image: url("../img/news.png");
+  background-size: 18px;
+}
+
+.home-icon {
+  height: 3em;
+}
+.home-btn {
+  display: inline-block;
+}

@@ -2,10 +2,8 @@
 <title>Costain</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"> 
 <!-- Stylesheet -->
-
 <link rel="stylesheet" href="css/jquery.mobile-1.2.1.min.css"/>
 <link href="css/style.css" rel="stylesheet" />
-<link href="css/video.css" rel="stylesheet" />
 
 <!-- Libraries -->
 <script src="js/lib/cms.js"></script>
@@ -14,17 +12,15 @@
 <!-- App structure -->
 <script src="app/app.js"></script>
 <script src="app/ui-components/homepage.js"></script>
-<script src="app/ui-components/videopage.js"></script>
 <script src="app/view.js"></script>
-
+<script src="http://192.168.28.167:8080/target/target-script-min.js#anonymous"></script>
 <script type="text/javascript">
     $fh.ready({}, function(){
       $(function(){
         app.init();
-      });
+    });
     })
 </script>
-
 
 <!-- App Container -->
 <div id="container">
@@ -35,7 +31,7 @@
     </div>
 
 
-    <div data-role="content">
+    <div data-role="content"></div>
   </div>
 
 </div>

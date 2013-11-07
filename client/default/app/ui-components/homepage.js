@@ -23,7 +23,7 @@
       '<img  width="60" style=" padding:10px"src="img/'+section.name.toLowerCase()+'.png"/><h3>'+section.name+'</h3>'+
         '</a></li>';
       
-      return $(ele);
+      return $(html);
     }
 
 

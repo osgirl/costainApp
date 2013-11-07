@@ -109,7 +109,6 @@ cms.model = (function(module) {
   // Public functions
   module.create = _create;
   module.read = _read;
-  module.remove=_remove;
   module.KEYS = {
     AppStructure: 'AppStructure'
   };
@@ -185,12 +184,6 @@ cms.model = (function(module) {
       })
     });
   }
-  function _remove(key,callback){
-      $fh.data({
-        act:"remove",
-        key:key
-      },callback,callback)
-  }
 
   return module;
 })(cms.model || {});
@@ -214,7 +207,6 @@ cms.service = (function(module) {
 
       cms.model.create(cms.model.KEYS.AppStructure, res, function(err, localRes) {
         if (!err) {
-          cms.events.emit("synced");
           return callback(null, res);
         } else {
           return callback(err, null);
@@ -224,9 +216,15 @@ cms.service = (function(module) {
   }
 
   // TODO Handle device events, 'resume' etc
-  function startPoll(seconds) {
+  function startPoll(seconds, callback) {
     // Default callback if one isn't provided
-   
+    callback = callback || function(err, res) {
+      if (err) {
+        console.log('Failed to get updated app App Structure via sync: ' + JSON.stringify(err));
+      } else {
+        console.log('Sync success!');
+      }
+    };
 
     // Clear old timers
     stopPoll();
@@ -234,7 +232,8 @@ cms.service = (function(module) {
     timerId = setTimeout(function() {
       // Callback will fire user callback and next sync...
       sync(function(err, res) {
-          startPoll(seconds);
+        callback(err, res);
+        startPoll(seconds, callback);
       });
     }, seconds * 1000);
   }
@@ -264,23 +263,9 @@ cms.data = (function(module) {
           cms.model.create(contentId, res);
           return callback(null, res);
         });
-      }else{
-        var alias=res.alias;
-        getAppStructure(function(err,app){
-          var curContent=_getContentMetaFromApp(alias,app);  
-          if (curContent.lastUpdate!=res.lastUpdate){//content is not update to date
-            cms.model.remove(contentId,function(){//remove the old one
-              getContent(contentId,callback);
-            });
-          }else{
-            return callback(null, res);      
-          }
-        });
-        
-        
       }
 
-      
+      return callback(null, res);
     });
   }
 
@@ -297,11 +282,9 @@ cms.data = (function(module) {
           cms.model.create(cms.model.KEYS.AppStructure, res);
           return callback(null, res);
         });
-      }else{
-        return callback(null, res);  
       }
 
-      
+      return callback(null, res);
     });
   }
 
@@ -328,34 +311,13 @@ cms.data = (function(module) {
           cms.model.create(constructExtraKey([cat, type, template, extraId]), res);
           return callback(null, res);
         });
-      }else{
-        return callback(null, res);  
       }
+
+      return callback(null, res);
     });
   }
 
-  function _getContentMetaFromApp(contentAlias,app){
-    var content=app.content;
-    return _recursiveFindContent(content,contentAlias);
-  }
-  function _recursiveFindContent(listElement,contentAlias){
-    //depth first recursive
-      var rtn=null;
-      for (var key in listElement.children){
-        var obj=listElement.children[key];
-        if (key == contentAlias){ //found the content
-          rtn= obj;
-          break;
-        }else if (obj.children){
-          rtn= _recursiveFindContent(obj,contentAlias);
-          if (rtn!=null){//found in this children
-            break;
-          }
-        }
-      }
-      return rtn;
-    
-  }
+
   function getRSSFeed(feedId, callback) {
     getContentExtra("import", "json", "rss", feedId, callback);
   }
@@ -374,11 +336,6 @@ cms.ui = (function(module) {
     var renderer = null;
     var registeredType = {};
     var uis = {};
-    cms.events.on("synced",function(){
-        initUi(function(){
-            console.log("UI synced with CMS");
-        });
-    });
 
     function getHtml(alias) {
         return uis[alias];
@@ -395,16 +352,7 @@ cms.ui = (function(module) {
             return registeredType[alias](element, cb);
         }
         if (element.children) { //list
-            var children=[];
-            for (var key in element.children){ //flat children
-              children.push(element.children[key]);
-            }
-            if (children.length ==1){//placeholder
-              var child=children[0];
-              return render(child,cb);
-            }else{ //render as a list
-              return renderer.renderList(element, cb);
-            }
+            return renderer.renderList(element, cb);
         } else {
             var cat=element.cat;
             var type=element.type;
@@ -454,10 +402,7 @@ cms.ui = (function(module) {
     function _recursiveParseApp(element, cb) {
         var alias = element.alias;
         render(element, function(err, html) {
-            if (typeof html =="string"){
-                html= html.replace("%{id}%",alias);
-            }
-            uis[alias] =html;
+            uis[alias] = html;
             if (element.children) {
                 var elementCount = 0;
                 for (var key in element.children) {
@@ -497,8 +442,8 @@ cms.ui.jqueryMobile = (function(module) {
             var eleName = ele.name;
             innerHtml += "<li><a href='#' data-nav='"+key+"'>" + eleName + "</a></li>";
         }
-        var html = '<div class="renderList" data-role="page" id="%{id}%">' +
-            '<div data-role="header" data-position="fixed"><h2>' + title + '</h2></div>' +
+        var html = '<div class="renderList" data-role="page" id="' + alias + '" data-position="fixed">' +
+            '<div data-role="header"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             '<ul data-role="listview" data-inset="true">' +
             innerHtml+'</ul>' +
@@ -518,8 +463,8 @@ cms.ui.jqueryMobile=(function(module){
         var title=element.name;
         var alias=element.alias;
         cms.data.getContent(contentId,function(err,content){
-            var html = '<div class="renderHtml" data-role="page" id="%{id}%">' +
-            '<div data-role="header" data-position="fixed"><h2>' + title + '</h2></div>' +
+            var html = '<div class="renderHtml" data-role="page" id="' + alias + '" data-position="fixed">' +
+            '<div data-role="header"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             content.content+
             '</div>' +
@@ -550,8 +495,8 @@ cms.ui.jqueryMobile=(function(module){
                 }
             }
             var title=element.name;
-            html = '<div class="renderRSS" data-role="page" id="%{id}%" >' +
-            '<div data-role="header" data-position="fixed"><h2>' + title + '</h2></div>' +
+            html = '<div class="renderRSS" data-role="page" id="' + alias + '" data-position="fixed">' +
+            '<div data-role="header"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             '<ul data-role="listview" data-inset="true">' +
             innerHtml+'</ul>' +
@@ -567,38 +512,39 @@ cms.ui.jqueryMobile=(function(module){
 cms.ui.jqueryMobile = (function(module) {
     module.init = init;
 
-    var inited = false;
+    function bindNavs() {
+        $("[data-nav]").unbind("tap").bind("tap", function() {
+            var pageId = $(this).data().nav;
+            if (cms.app.onNav) {
+                cms.app.onNav(pageId);
+            }
+            return false;
+        });
+    }
 
     function init() {
-        if (inited == false) {
-            inited = true;
-            $("[data-nav]").live("tap", function() {
-                var pageId = $(this).data().nav;
-                if (cms.app.onNav) {
-                    cms.app.onNav(pageId);
-                }
-            });
-            $("[data-extraId]").live("tap", function() {
-                if (cms.app.onNav) {
-                    var data = $(this).data();
-                    var cat = data.cmscat;
-                    var type = data.cmstype;
-                    var template = data.cmstemplate;
-                    var extraId = data.extraid;
-                    var uid = (cat + type + template).toLowerCase() + "_" + extraId;
-                    if ($("#" + uid).length > 0) {
+        // When a page loads bind our nav behaviour
+        $(document).on('pageinit', function() {
+            bindNavs();
+        });
+        $("[data-extraId]").live("tap", function() {
+            if (cms.app.onNav) {
+                var data = $(this).data();
+                var cat = data.cmscat;
+                var type = data.cmstype;
+                var template = data.cmstemplate;
+                var extraId = data.extraid;
+                var uid = (cat + type + template).toLowerCase() + "_" + extraId;
+                if ($("#" + uid).length > 0) {
+                    cms.app.onNav(uid);
+                } else {
+                    cms.ui.loadExtra(cat, type, template, extraId, function(err, uid) {
                         cms.app.onNav(uid);
-                    } else {
-                        cms.ui.loadExtra(cat, type, template, extraId, function(err, uid) {
-                            cms.app.onNav(uid);
-                        });
-                    }
+                    });
                 }
+            }
 
-            });
-
-        }
-
+        });
 
 
     }
@@ -613,8 +559,8 @@ cms.ui.jqueryMobile=(function(module){
         var name=element.name;
         var alias=element.alias;
         var _id=element._id;
-        var html='<div class="defaultRender" data-role="page" id="%{id}%" >' +
-            '<div data-role="header" data-position="fixed"><h2>' + name + '</h2></div>' +
+        var html='<div class="defaultRender" data-role="page" id="' + alias + '" data-position="fixed">' +
+            '<div data-role="header"><h2>' + name + '</h2></div>' +
             '<div data-role="content">' +
             _id+
             '</div>' +
@@ -661,12 +607,10 @@ cms.ui.jqueryMobile.renderExtra = (function(module) {
                 '<div>' +
                 description+
                 '</div>' +
-                '<div data-role="button" onClick="cms.util.webview(\''+link+'\')">Read Original Feed</div>' +
+                '<div data-role="button" onClick="cms.util.webview(\"'+link+'\")">Read Original Feed</div>' +
                 '</div>' +
                 '</div>' +
-                '</div>';
-
-                cb(null,html);
+                '</div>'
         });
 
     }

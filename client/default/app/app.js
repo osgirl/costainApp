@@ -13,8 +13,8 @@ var app=(function(module) {
     $.mobile.showPageLoadingMsg("a","Fetching content");
     cms.ui.initUi(function(){
         var ul=cms.ui.getHtml(cms.app.alias);
-        $("#homePage [data-role='content']").html(ul);
-        ul.listview();
+        $("#homePage [data-role='content']").html(ul).trigger('create').trigger('pageinit');
+        // ul.listview();
         $.mobile.hidePageLoadingMsg();
     });
     $.mobile.page.prototype.options.addBackBtn=true;

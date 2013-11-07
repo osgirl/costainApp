@@ -22,12 +22,8 @@
       var html = '<li> <a href="#" data-nav="' + section.alias + '">'+
       '<img  width="60" style=" padding:10px"src="img/'+section.name.toLowerCase()+'.png"/><h3>'+section.name+'</h3>'+
         '</a></li>';
-
-      var ele = $(html);
-      return ele.bind('click', function(e) {
-        app.view.changePage(section.alias);
-        return false;
-      });
+      
+      return $(html);
     }
 
 

@@ -497,8 +497,8 @@ cms.ui.jqueryMobile = (function(module) {
             var eleName = ele.name;
             innerHtml += "<li><a href='#' data-nav='"+key+"'>" + eleName + "</a></li>";
         }
-        var html = '<div class="renderList" data-role="page" id="%{id}%" data-position="fixed">' +
-            '<div data-role="header"><h2>' + title + '</h2></div>' +
+        var html = '<div class="renderList" data-role="page" id="%{id}%">' +
+            '<div data-role="header" data-position="fixed"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             '<ul data-role="listview" data-inset="true">' +
             innerHtml+'</ul>' +
@@ -518,8 +518,8 @@ cms.ui.jqueryMobile=(function(module){
         var title=element.name;
         var alias=element.alias;
         cms.data.getContent(contentId,function(err,content){
-            var html = '<div class="renderHtml" data-role="page" id="%{id}%" data-position="fixed">' +
-            '<div data-role="header"><h2>' + title + '</h2></div>' +
+            var html = '<div class="renderHtml" data-role="page" id="%{id}%">' +
+            '<div data-role="header" data-position="fixed"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             content.content+
             '</div>' +
@@ -550,8 +550,8 @@ cms.ui.jqueryMobile=(function(module){
                 }
             }
             var title=element.name;
-            html = '<div class="renderRSS" data-role="page" id="%{id}%" data-position="fixed">' +
-            '<div data-role="header"><h2>' + title + '</h2></div>' +
+            html = '<div class="renderRSS" data-role="page" id="%{id}%" >' +
+            '<div data-role="header" data-position="fixed"><h2>' + title + '</h2></div>' +
             '<div data-role="content">' +
             '<ul data-role="listview" data-inset="true">' +
             innerHtml+'</ul>' +
@@ -613,8 +613,8 @@ cms.ui.jqueryMobile=(function(module){
         var name=element.name;
         var alias=element.alias;
         var _id=element._id;
-        var html='<div class="defaultRender" data-role="page" id="%{id}%" data-position="fixed">' +
-            '<div data-role="header"><h2>' + name + '</h2></div>' +
+        var html='<div class="defaultRender" data-role="page" id="%{id}%" >' +
+            '<div data-role="header" data-position="fixed"><h2>' + name + '</h2></div>' +
             '<div data-role="content">' +
             _id+
             '</div>' +

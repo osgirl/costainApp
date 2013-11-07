@@ -9,7 +9,10 @@ app.view=(function(module){
         }
         _injectPage(id);
         args.unshift("#"+id);
-        $.mobile.changePage.apply($.mobile,args);
+        setTimeout(function(){
+            $.mobile.changePage.apply($.mobile,args);    
+        },1);
+        
     }
 
     function _injectPage(alias){

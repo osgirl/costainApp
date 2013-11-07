@@ -24,10 +24,6 @@
         '</a></li>';
 
       var ele = $(html);
-      ele.unbind('click').bind('click', function() {
-        app.view.changePage(section.alias);
-        return false;
-      });
       return ele;
     }
 

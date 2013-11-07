@@ -7,7 +7,10 @@ var app=(function(module) {
     cms.init({
       alias: 'costainapp_1383735125091',
       onNav:function(contentId){
-        app.view.changePage(contentId,{"changeHash":true,"addBackBtn":true});
+        setTimeout(function(){
+            app.view.changePage(contentId,{"changeHash":true,"addBackBtn":true});    
+        },10);
+        
       }
     });  
     $.mobile.showPageLoadingMsg("a","Fetching content");

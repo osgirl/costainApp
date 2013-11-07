@@ -19,7 +19,7 @@
      */
     function createButton(section) {
       // <a href="#about" data-role="button" data-icon="about">About</a>
-      var html = '<li data-nav="' + section.alias + '"><a href="#">'+
+      var html = '<li> <a href="#" data-nav="' + section.alias + '">'+
       '<img  width="60" style=" padding:10px"src="img/'+section.name.toLowerCase()+'.png"/><h3>'+section.name+'</h3>'+
         '</a></li>';
 

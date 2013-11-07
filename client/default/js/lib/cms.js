@@ -268,7 +268,7 @@ cms.data = (function(module) {
         var alias=res.alias;
         getAppStructure(function(err,app){
           var curContent=_getContentMetaFromApp(alias,app);  
-          if (curContent.lastUpdate!=res.lastUpdate){//content is not update to date
+          if (curContent==null || curContent.lastUpdate!=res.lastUpdate){//content is not update to date
             cms.model.remove(contentId,function(){//remove the old one
               getContent(contentId,callback);
             });
@@ -572,13 +572,14 @@ cms.ui.jqueryMobile = (function(module) {
     function init() {
         if (inited == false) {
             inited = true;
-            $("[data-nav]").live("tap", function() {
+
+            $("[data-nav]").live("click", function() {
                 var pageId = $(this).data().nav;
                 if (cms.app.onNav) {
                     cms.app.onNav(pageId);
                 }
             });
-            $("[data-extraId]").live("tap", function() {
+            $("[data-extraId]").live("click", function() {
                 if (cms.app.onNav) {
                     var data = $(this).data();
                     var cat = data.cmscat;

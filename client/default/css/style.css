@@ -1,6 +1,8 @@
 html, body {
   -webkit-font-smoothing: antialiased;
   font-weight: lighter;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 }
 #homePage ul {
   margin:0;
@@ -24,6 +26,11 @@ html, body {
    
 }
 
+
+#homePage ul li:hover {
+  background-color: #ccc;
+  box-shadow: 0px -1px 5px;
+}
 
 #homePage ul li a {
   color: #0167B9;

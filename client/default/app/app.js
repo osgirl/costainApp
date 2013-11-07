@@ -12,7 +12,6 @@ var app=(function(module) {
     });  
     $.mobile.showPageLoadingMsg("a","Fetching content");
     cms.ui.initUi(function(){
-      console.log('IO')
         $("#homePage [data-role='content']").html(cms.ui.getHtml(cms.app.alias));
         $.mobile.hidePageLoadingMsg();
     });

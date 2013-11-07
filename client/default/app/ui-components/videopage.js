@@ -20,7 +20,7 @@ cms.ui.registerType('videos_1383829400928', function(element, cb) {
             var n = obj.name;
             var url = obj.url;
             var dateAdd = obj.dateadded;
-            contentHtml += '<li><a href="'+url+'" target="_blank">' +
+            contentHtml += '<li><a href="javascript:cms.util.webview(\''+url+'\')" target="_blank">' +
                 '    <div class="imgRow"><img src="'+img+'"/></div>' +
                 '    <div class="nameRow">'+n+'</div>' +
                 '    <div class="dateRow">'+dateAdd+'</div>' +

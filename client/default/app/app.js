@@ -12,7 +12,9 @@ var app=(function(module) {
     });  
     $.mobile.showPageLoadingMsg("a","Fetching content");
     cms.ui.initUi(function(){
-        $("#homePage [data-role='content']").html(cms.ui.getHtml(cms.app.alias));
+        var ul=cms.ui.getHtml(cms.app.alias);
+        $("#homePage [data-role='content']").html(ul);
+        ul.listview();
         $.mobile.hidePageLoadingMsg();
     });
     $.mobile.page.prototype.options.addBackBtn=true;

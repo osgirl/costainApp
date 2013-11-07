@@ -24,10 +24,11 @@
         '</a></li>';
 
       var ele = $(html);
-      return ele.bind('click', function(e) {
+      ele.unbind('click').bind('click', function() {
         app.view.changePage(section.alias);
         return false;
       });
+      return ele;
     }
 
 

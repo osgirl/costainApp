@@ -43,6 +43,13 @@ html, body {
 }
 
 /**
+ * Back button
+ */
+[data-rel="back"].ui-btn, [data-rel="back"].ui-btn {
+  background-image: linear-gradient( #0562AC, #123C5E);
+}
+
+/**
  * Custom icons
  */
 .ui-icon-about {

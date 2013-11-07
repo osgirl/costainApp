@@ -1,0 +1,41 @@
+.videoPage{}
+.videoPage ul,.videoPage ul li{
+    margin:0;
+    padding:0;
+    list-style: none;
+}
+
+.videoPage ul li{
+    width:240px;
+    float:left;
+    margin-right:10px;
+    margin-bottom:10px;
+    padding:0px;
+    border:2px solid #0067C2;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+.videoPage ul li a{
+    text-decoration: none;
+}
+.videoPage ul li .imgRow{
+    padding: 0;
+}
+.videoPage ul li .imgRow img{
+    width:100%;
+}
+.videoPage ul li .nameRow{
+    padding:5px;
+    text-align: center;
+    font-weight: bold;
+    
+    color:white;
+    background: #013E73;
+}
+
+.videoPage ul li .dateRow{
+    font-size:0.8em;
+    padding:3px;
+    text-align: right;
+}

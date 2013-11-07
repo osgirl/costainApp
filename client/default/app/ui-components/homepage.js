@@ -1,6 +1,6 @@
 (function() {
   var order=[
-    "home","about","news","video","contact"
+    "home","about","news","video","engineeringtomorrow","contact"
   ]
   // Element is the children of costainapp_1383735125091
   cms.ui.registerType('costainapp_1383735125091', function(element, cb) {

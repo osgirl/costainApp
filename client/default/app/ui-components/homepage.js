@@ -19,8 +19,8 @@
      */
     function createButton(section) {
       // <a href="#about" data-role="button" data-icon="about">About</a>
-      var html = '<li><a href="#"><div data-nav="' + section.alias + '" class="home-icon" style="-webkit-mask-box-image: url(img/'+section.name.toLowerCase()+'.png);">'+
-        '</div><p>'+section.name+'</p>'+
+      var html = '<li data-nav="' + section.alias + '"><a href="#">'+
+      '<img  width="60" style=" padding:10px"src="img/'+section.name.toLowerCase()+'.png"/><h3>'+section.name+'</h3>'+
         '</a></li>';
 
       var ele = $(html);
@@ -36,7 +36,7 @@
      * @param {Object | Array} elements
      */
     function createHomeButtons(elements) {
-      var ul = $('<ul>');
+      var ul = $('<ul data-role="listview" >');
       var eleArr=[];
       $.each(elements, function(i, obj) {
         eleArr.push(obj);
@@ -49,6 +49,7 @@
       $.each(eleArr,function(i,obj){
         ul.append(createButton(obj));
       });
+      //ul.listview("refresh");
       return ul;
     }
 

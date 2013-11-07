@@ -10,9 +10,11 @@ var app=(function(module) {
         app.view.changePage(contentId,{"changeHash":true,"addBackBtn":true});
       }
     });  
-    //TODO add loading spiner
+    $.mobile.showPageLoadingMsg("a","Fetching content");
     cms.ui.initUi(function(){
+      console.log('IO')
         $("#homePage [data-role='content']").html(cms.ui.getHtml(cms.app.alias));
+        $.mobile.hidePageLoadingMsg();
     });
     $.mobile.page.prototype.options.addBackBtn=true;
     cms.service.startPoll(8); //sync every 30 seconds.

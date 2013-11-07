@@ -1,4 +1,7 @@
 (function() {
+  var order=[
+    "home","about","news","video","contact"
+  ]
   // Element is the children of costainapp_1383735125091
   cms.ui.registerType('costainapp_1383735125091', function(element, cb) {
 
@@ -34,10 +37,18 @@
      */
     function createHomeButtons(elements) {
       var ul = $('<ul>');
+      var eleArr=[];
       $.each(elements, function(i, obj) {
-        ul.append(createButton(obj));
+        eleArr.push(obj);
+        
       });
 
+      eleArr.sort(function(a,b){
+        return order.indexOf(a.alias.split("_")[0].toLowerCase())-order.indexOf(b.alias.split("_")[0].toLowerCase());
+      });
+      $.each(eleArr,function(i,obj){
+        ul.append(createButton(obj));
+      });
       return ul;
     }
 

@@ -4,10 +4,11 @@ app.view=(function(module){
     function changePage(){
         var args=Array.prototype.slice.call(arguments,0);
         var id=args.shift();
-        if ($("#"+id).length==0){
-            _injectPage(id);
+        if ($("#"+id).length>0){
+            $("#"+id).remove();
         }
-        args.unshift($("#"+id));
+        _injectPage(id);
+        args.unshift("#"+id);
         $.mobile.changePage.apply($.mobile,args);
     }
 

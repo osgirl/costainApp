@@ -7,13 +7,15 @@ var app=(function(module) {
     cms.init({
       alias: 'costainapp_1383735125091',
       onNav:function(contentId){
-        app.view.changePage(contentId);
+        app.view.changePage(contentId,{"changeHash":true,"addBackBtn":true});
       }
     });  
     //TODO add loading spiner
     cms.ui.initUi(function(){
         $("#homePage [data-role='content']").html(cms.ui.getHtml(cms.app.alias));
     });
+    $.mobile.page.prototype.options.addBackBtn=true;
+    cms.service.startPoll(8); //sync every 30 seconds.
   }
 
   return module;

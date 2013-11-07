@@ -19,15 +19,9 @@
      */
     function createButton(section) {
       // <a href="#about" data-role="button" data-icon="about">About</a>
-      var html = '<li><a href="#">'+
+      var html = '<li data-nav="' + section.alias + '"><a href="#">'+
       '<img  width="60" style=" padding:10px"src="img/'+section.name.toLowerCase()+'.png"/><h3>'+section.name+'</h3>'+
         '</a></li>';
-
-      var ele = $(html);
-      return ele.bind('click', function(e) {
-        app.view.changePage(section.alias);
-        return false;
-      });
     }
 
 
